@@ -6,6 +6,7 @@ from sklearn.model_selection import train_test_split
 from colorama import init, Fore, Style
 import seaborn as sns
 from scipy.stats import chi2_contingency
+from statsmodels.graphics.mosaicplot import mosaic
 
 # Initialize colorama for colored output
 init()
@@ -467,3 +468,9 @@ plt.title('Seatbelt Use Among Deceased')
 plt.legend(seatbelt_deceased_counts.index, title='Seatbelt Use', loc='best')
 plt.show()
 
+table = pd.crosstab([df['frontal'], df['sex']], df['dead'])
+
+plt.figure(figsize=(10, 6))
+mosaic(table.stack())
+plt.title('Mosaic Plot: Frontal Collision, Sex, and Death')
+plt.show()
