@@ -438,3 +438,30 @@ stacked_data.index = ['Seatbelt Worn', 'Seatbelt Not Worn']
 # plt.show()
 
 
+
+airbag_survivors_counts = df[df['dead'] == 'ALIVE']['airbag'].value_counts()
+plt.figure(figsize=(8, 6))
+plt.pie(airbag_survivors_counts, labels=airbag_survivors_counts.index, autopct='%1.1f%%', startangle=90, colors=['#4CAF50', '#81C784'])
+plt.title('Airbag Deployment Among Survivors')
+plt.show()
+
+airbag_deceased_counts = df[df['dead'] == 'DEAD']['airbag'].value_counts()
+plt.figure(figsize=(8, 6))
+plt.pie(airbag_deceased_counts, labels=airbag_deceased_counts.index, autopct='%1.1f%%', startangle=90, colors=['#E53935', '#FF8A65'])
+plt.title('Airbag Deployment Among Deceased')
+plt.show()
+
+seatbelt_survival_counts = df[df['dead'] == 'ALIVE']['seatbelt'].value_counts()
+plt.figure(figsize=(8, 6))
+plt.pie(seatbelt_survival_counts, labels=seatbelt_survival_counts.index, autopct='%1.1f%%', startangle=90, colors=['#1E88E5', '#90CAF9'])
+plt.title('Seatbelt Use Among Survivors')
+plt.show()
+
+seatbelt_deceased_counts = df[df['dead'] == 'DEAD']['seatbelt'].value_counts()
+plt.figure(figsize=(8, 6))
+plt.pie(seatbelt_deceased_counts, labels=seatbelt_deceased_counts.index, autopct='%1.1f%%', startangle=90, colors=['#FB8C00', '#FFD54F'])
+plt.title('Seatbelt Use Among Deceased')
+plt.show()
+
+
+
