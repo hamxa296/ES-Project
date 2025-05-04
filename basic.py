@@ -92,9 +92,22 @@ print("-"*40)
 print(df.head().to_string())
 print("\n")
 
-# Calculate average and variance for the 'ageOfOCC' column
-average_age = df['ageOFocc'].mean()
-variance_age = df['ageOFocc'].var()
+# Calculate average and variance for the 'ageOfOCC' column manually
+# Calculate mean manually
+sum_age = 0
+count = 0
+for age in df['ageOFocc']:
+    if not pd.isna(age):  # Skip NaN values
+        sum_age += age
+        count += 1
+average_age = sum_age / count
+
+# Calculate variance manually
+sum_squared_diff = 0
+for age in df['ageOFocc']:
+    if not pd.isna(age):  # Skip NaN values
+        sum_squared_diff += (age - average_age) ** 2
+variance_age = sum_squared_diff / (count - 1)  # Using sample variance formula (n-1)
 
 # Print header for dataset overview
 print("\n" + "="*80)
@@ -161,43 +174,15 @@ proportion_inside = inside_count / total_test
 
 print(f"Proportion of test data inside tolerance interval: {inside_count}/{total_test} = {proportion_inside:.2f}")
 
-# Create pie charts for all categorical variables
-# Airbag deployment pie chart
-# create_figure(figsize=(8, 6))
-# airbag_counts = df['airbag'].value_counts()
-# explode = [0.1 if i == airbag_counts.idxmax() else 0 for i in airbag_counts.index]
-# plt.pie(airbag_counts, labels=airbag_counts.index, autopct='%1.1f%%', startangle=90, explode=explode)
-# plt.title('Airbag Deployment Distribution', pad=20, fontsize=14)
-# plt.tight_layout()
-# plt.show()
-
-# Death status pie chart
-# create_figure(figsize=(8, 6))
-# dead_counts = df['dead'].value_counts()
-# explode = [0.1 if i == dead_counts.idxmax() else 0 for i in dead_counts.index]
-# plt.pie(dead_counts, labels=dead_counts.index, autopct='%1.1f%%', startangle=90, explode=explode)
-# plt.title('Death Status Distribution', pad=20, fontsize=14)
-# plt.tight_layout()
-# plt.show()
-
-# Seatbelt usage pie chart
-# create_figure(figsize=(8, 6))
-# seatbelt_counts = df['seatbelt'].value_counts()
-# explode = [0.1 if i == seatbelt_counts.idxmax() else 0 for i in seatbelt_counts.index]
-# plt.pie(seatbelt_counts, labels=seatbelt_counts.index, autopct='%1.1f%%', startangle=90, explode=explode)
-# plt.title('Seatbelt Usage Distribution', pad=20, fontsize=14)
-# plt.tight_layout()
-# plt.show()
-
 # Create histogram for age
-# plt.figure(figsize=(10, 5))
-# plt.hist(df['ageOFocc'], bins=10, alpha=0.7, edgecolor='black')
-# plt.title('Histogram of Age')
-# plt.xlabel('Age')
-# plt.ylabel('Frequency')
-# plt.grid(True, linestyle='--', alpha=0.7)
-# plt.tight_layout()
-# plt.show()
+plt.figure(figsize=(10, 5))
+plt.hist(df['ageOFocc'], bins=10, alpha=0.7, edgecolor='black')
+plt.title('Histogram of Age')
+plt.xlabel('Age')
+plt.ylabel('Frequency')
+plt.grid(True, linestyle='--', alpha=0.7)
+plt.tight_layout()
+plt.show()
 
 # Calculate statistics using frequency distribution
 def calculate_stats_from_freq(column):
@@ -287,7 +272,7 @@ else:
     print("\nFail to reject the null hypothesis: Airbag deployment and fatality are independent.")
 
 # Combined effect visualization (Bar Chart)
-# plt.figure(figsize=(12, 6))
+plt.figure(figsize=(12, 6))
 # Create a new DataFrame for the visualization
 airbag_seatbelt_survival = pd.crosstab([df['airbag'], df['seatbelt']], df['dead'])
 airbag_seatbelt_survival.columns = ['SURVIVED', 'DECEASED']
@@ -300,18 +285,18 @@ for airbag, belt in airbag_seatbelt_survival.index:
     belt_label = "Seatbelt Worn" if "WORN" in belt else "Seatbelt Not Worn"
     labels.append(f"{airbag_label}\n{belt_label}")
 
-# x = range(len(labels))
-# plt.bar(x, airbag_seatbelt_survival['SURVIVED'])
-# plt.title('Survival Count by Airbag Deployment and Seatbelt Usage', pad=20)
-# plt.xlabel('Airbag Deployment and Seatbelt Usage', labelpad=10)
-# plt.ylabel('Number of Survivors', labelpad=10)
-# plt.xticks(x, labels, rotation=0)
-# plt.grid(True, linestyle='--', alpha=0.3)
-# plt.tight_layout()
-# plt.show()
+x = range(len(labels))
+plt.bar(x, airbag_seatbelt_survival['SURVIVED'])
+plt.title('Survival Count by Airbag Deployment and Seatbelt Usage', pad=20)
+plt.xlabel('Airbag Deployment and Seatbelt Usage', labelpad=10)
+plt.ylabel('Number of Survivors', labelpad=10)
+plt.xticks(x, labels, rotation=0)
+plt.grid(True, linestyle='--', alpha=0.3)
+plt.tight_layout()
+plt.show()
 
 # Stacked Bar Graph
-# create_figure(figsize=(10, 6))
+plt.figure(figsize=(10, 6))
 # Group data by seatbelt and airbag
 stacked_data = airbag_seatbelt_survival.unstack(level=0)
 # Ensure we have the correct number of columns
@@ -321,124 +306,122 @@ if len(stacked_data.columns) == 4:
 stacked_data.index = ['Seatbelt Worn', 'Seatbelt Not Worn']
 
 # Plot stacked bars
-# stacked_data.plot(kind='bar', stacked=True)
-# plt.title('Survival Count by Seatbelt Usage and Airbag Deployment', pad=20)
-# plt.xlabel('Seatbelt Usage', labelpad=10)
-# plt.ylabel('Number of Cases', labelpad=10)
-# plt.legend(title='Airbag and Survival Status', bbox_to_anchor=(1.05, 1), loc='upper left')
-# plt.grid(True, linestyle='--', alpha=0.3)
-# plt.tight_layout()
-# plt.show()
+stacked_data.plot(kind='bar', stacked=True)
+plt.title('Survival Count by Seatbelt Usage and Airbag Deployment', pad=20)
+plt.xlabel('Seatbelt Usage', labelpad=10)
+plt.ylabel('Number of Cases', labelpad=10)
+plt.legend(title='Airbag and Survival Status', bbox_to_anchor=(1.05, 1), loc='upper left')
+plt.grid(True, linestyle='--', alpha=0.3)
+plt.tight_layout()
+plt.show()
 
 # Boxplot of Age by Survival Status
-# create_figure(figsize=(12, 6))
+plt.figure(figsize=(12, 6))
 # Create subplots for different combinations
-# fig, axes = plt.subplots(1, 2, figsize=(15, 6))
+fig, axes = plt.subplots(1, 2, figsize=(15, 6))
 
 # Boxplot 1: Age by Survival Status
-# df.boxplot(column='ageOFocc', by='dead', ax=axes[0])
-# axes[0].set_title('Age Distribution by Survival Status')
-# axes[0].set_xlabel('Survival Status')
-# axes[0].set_ylabel('Age')
+df.boxplot(column='ageOFocc', by='dead', ax=axes[0])
+axes[0].set_title('Age Distribution by Survival Status')
+axes[0].set_xlabel('Survival Status')
+axes[0].set_ylabel('Age')
 
 # Boxplot 2: Age by Survival Status and Seatbelt Usage
-# df.boxplot(column='ageOFocc', by=['dead', 'seatbelt'], ax=axes[1])
-# axes[1].set_title('Age Distribution by Survival Status and Seatbelt Usage')
-# axes[1].set_xlabel('Survival Status and Seatbelt Usage')
-# axes[1].set_ylabel('Age')
+df.boxplot(column='ageOFocc', by=['dead', 'seatbelt'], ax=axes[1])
+axes[1].set_title('Age Distribution by Survival Status and Seatbelt Usage')
+axes[1].set_xlabel('Survival Status and Seatbelt Usage')
+axes[1].set_ylabel('Age')
 
-# plt.tight_layout()
-# plt.show()
+plt.tight_layout()
+plt.show()
 
 # Chi-Square Analysis Visualization
-# create_figure(figsize=(15, 5))
-# fig, axes = plt.subplots(1, 2, figsize=(15, 5))
+plt.figure(figsize=(15, 5))
+fig, axes = plt.subplots(1, 2, figsize=(15, 5))
 
 # Airbag vs Survival
-# airbag_survival = pd.crosstab(df['airbag'], df['dead'])
-# airbag_survival.plot(kind='bar', stacked=True, ax=axes[0])
-# axes[0].set_title('Airbag Deployment vs Survival Status')
-# axes[0].set_xlabel('Airbag Deployment')
-# axes[0].set_ylabel('Count')
-# axes[0].legend(title='Survival Status')
+airbag_survival = pd.crosstab(df['airbag'], df['dead'])
+airbag_survival.plot(kind='bar', stacked=True, ax=axes[0])
+axes[0].set_title('Airbag Deployment vs Survival Status')
+axes[0].set_xlabel('Airbag Deployment')
+axes[0].set_ylabel('Count')
+axes[0].legend(title='Survival Status')
 
 # Seatbelt vs Survival
-# seatbelt_survival = pd.crosstab(df['seatbelt'], df['dead'])
-# seatbelt_survival.plot(kind='bar', stacked=True, ax=axes[1])
-# axes[1].set_title('Seatbelt Usage vs Survival Status')
-# axes[1].set_xlabel('Seatbelt Usage')
-# axes[1].set_ylabel('Count')
-# axes[1].legend(title='Survival Status')
+seatbelt_survival = pd.crosstab(df['seatbelt'], df['dead'])
+seatbelt_survival.plot(kind='bar', stacked=True, ax=axes[1])
+axes[1].set_title('Seatbelt Usage vs Survival Status')
+axes[1].set_xlabel('Seatbelt Usage')
+axes[1].set_ylabel('Count')
+axes[1].legend(title='Survival Status')
 
-# plt.tight_layout()
-# plt.show()
+plt.tight_layout()
+plt.show()
 
 # Confidence Interval for Mean Age
-# create_figure(figsize=(6, 1.5))
-# mean_age = 38.17
-# ci_low = 37.432
-# ci_high = 39.142
+plt.figure(figsize=(6, 1.5))
+mean_age = 38.17
+ci_low = 37.432
+ci_high = 39.142
 
-# plt.errorbar(mean_age, 0, xerr=[[mean_age - ci_low], [ci_high - mean_age]], fmt='o', color='blue', capsize=5)
-# plt.title('95% Confidence Interval for Mean Age')
-# plt.xlabel('Age')
-# plt.yticks([])
-# plt.grid(True)
-# plt.tight_layout()
-# plt.show()
+plt.errorbar(mean_age, 0, xerr=[[mean_age - ci_low], [ci_high - mean_age]], fmt='o', color='blue', capsize=5)
+plt.title('95% Confidence Interval for Mean Age')
+plt.xlabel('Age')
+plt.yticks([])
+plt.grid(True)
+plt.tight_layout()
+plt.show()
 
 # Confidence Interval for Variance
-# create_figure(figsize=(6, 1.5))
-# var = 317.586
-# ci_var_low = 295.683
-# ci_var_high = 338.738
+plt.figure(figsize=(6, 1.5))
+var = 317.586
+ci_var_low = 295.683
+ci_var_high = 338.738
 
-# plt.errorbar(var, 0, xerr=[[var - ci_var_low], [ci_var_high - var]], fmt='o', color='green', capsize=5)
-# plt.title('95% Confidence Interval for Age Variance')
-# plt.xlabel('Variance')
-# plt.yticks([])
-# plt.grid(True)
-# plt.tight_layout()
-# plt.show()
+plt.errorbar(var, 0, xerr=[[var - ci_var_low], [ci_var_high - var]], fmt='o', color='green', capsize=5)
+plt.title('95% Confidence Interval for Age Variance')
+plt.xlabel('Variance')
+plt.yticks([])
+plt.grid(True)
+plt.tight_layout()
+plt.show()
 
 # Tolerance Interval Plot
-# create_figure(figsize=(8, 4))
-# plt.hist(df['ageOFocc'], bins=30, color='skyblue', edgecolor='black', alpha=0.7)
-# plt.axvline(3.404, color='red', linestyle='--', label='Lower Tolerance Bound')
-# plt.axvline(73.17, color='red', linestyle='--', label='Upper Tolerance Bound')
-# plt.title('95% Tolerance Interval on Age Distribution')
-# plt.xlabel('Age')
-# plt.ylabel('Frequency')
-# plt.legend()
-# plt.tight_layout()
-# plt.show()
+plt.figure(figsize=(8, 4))
+plt.hist(df['ageOFocc'], bins=30, color='skyblue', edgecolor='black', alpha=0.7)
+plt.axvline(3.404, color='red', linestyle='--', label='Lower Tolerance Bound')
+plt.axvline(73.17, color='red', linestyle='--', label='Upper Tolerance Bound')
+plt.title('95% Tolerance Interval on Age Distribution')
+plt.xlabel('Age')
+plt.ylabel('Frequency')
+plt.legend()
+plt.tight_layout()
+plt.show()
 
 # Expected vs Observed Frequencies Visualization
-# plt.figure(figsize=(15, 5))
-# fig, axes = plt.subplots(1, 2, figsize=(15, 5))
+plt.figure(figsize=(15, 5))
+fig, axes = plt.subplots(1, 2, figsize=(15, 5))
 
 # Airbag expected vs observed
-# chi2, p, dof, expected = stats.chi2_contingency(airbag_survival)
-# expected_df = pd.DataFrame(expected, index=airbag_survival.index, columns=airbag_survival.columns)
-# expected_df.plot(kind='bar', ax=axes[0])
-# axes[0].set_title('Expected Frequencies: Airbag vs Survival')
-# axes[0].set_xlabel('Airbag Deployment')
-# axes[0].set_ylabel('Expected Count')
-# axes[0].legend(title='Survival Status')
+chi2, p, dof, expected = stats.chi2_contingency(airbag_survival)
+expected_df = pd.DataFrame(expected, index=airbag_survival.index, columns=airbag_survival.columns)
+expected_df.plot(kind='bar', ax=axes[0])
+axes[0].set_title('Expected Frequencies: Airbag vs Survival')
+axes[0].set_xlabel('Airbag Deployment')
+axes[0].set_ylabel('Expected Count')
+axes[0].legend(title='Survival Status')
 
 # Seatbelt expected vs observed
-# chi2, p, dof, expected = stats.chi2_contingency(seatbelt_survival)
-# expected_df = pd.DataFrame(expected, index=seatbelt_survival.index, columns=seatbelt_survival.columns)
-# expected_df.plot(kind='bar', ax=axes[1])
-# axes[1].set_title('Expected Frequencies: Seatbelt vs Survival')
-# axes[1].set_xlabel('Seatbelt Usage')
-# axes[1].set_ylabel('Expected Count')
-# axes[1].legend(title='Survival Status')
+chi2, p, dof, expected = stats.chi2_contingency(seatbelt_survival)
+expected_df = pd.DataFrame(expected, index=seatbelt_survival.index, columns=seatbelt_survival.columns)
+expected_df.plot(kind='bar', ax=axes[1])
+axes[1].set_title('Expected Frequencies: Seatbelt vs Survival')
+axes[1].set_xlabel('Seatbelt Usage')
+axes[1].set_ylabel('Expected Count')
+axes[1].legend(title='Survival Status')
 
-# plt.tight_layout()
-# plt.show()
-
-
+plt.tight_layout()
+plt.show()
 
 airbag_survivors_counts = df[df['dead'] == 'ALIVE']['airbag'].value_counts()
 plt.figure(figsize=(8, 6))
