@@ -11,13 +11,6 @@ from statsmodels.graphics.mosaicplot import mosaic
 # Initialize colorama for colored output
 init()
 
-# Set the backend to 'TkAgg' to better handle multiple figures
-# plt.switch_backend('TkAgg')
-
-# Function to create and show a figure
-# def create_figure(figsize=(10, 6)):
-#     plt.close('all')  # Close any existing figures
-#     return plt.figure(figsize=figsize)
 
 # Function to print formatted table with more prominent headers
 def print_formatted_table(df, title):
