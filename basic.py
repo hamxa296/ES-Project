@@ -111,11 +111,7 @@ print("="*80)
 print(f"Average age of occupants: {round(average_age, 3)} years")
 print(f"Variance of age of occupants: {round(variance_age, 3)} years²\n")
 
-# Age Statistics using Frequency Distribution
-#print("="*80)
-#print("AGE STATISTICS USING FREQUENCY DISTRIBUTION".center(80))
-#print("="*80)
-#print(f"Average: {round(average_age, 3)} years")
+
 # -----------------------------------------
 # Confidence Interval and Tolerance Interval Analysis
 # -----------------------------------------
@@ -135,7 +131,6 @@ sem = stats.sem(train_data)           # standard error of the mean
 confidence_level = 0.95
 mean_conf_interval = stats.t.interval(confidence_level, df=n-1, loc=mean, scale=sem)
 
-###print(f"\n95% Confidence Interval for the mean age: ({round(float(mean_conf_interval[0]), 3)}, {round(float(mean_conf_interval[1]), 3)})")
 
 # Step 3: Calculate 95% Confidence Interval for the Variance
 alpha = 1 - confidence_level
@@ -149,7 +144,6 @@ variance_conf_interval = (
     (n-1) * sample_variance / chi2_lower
 )
 
-###print(f"95% Confidence Interval for the variance of age: ({round(float(variance_conf_interval[0]), 3)}, {round(float(variance_conf_interval[1]), 3)})")
 
 # Step 4: Calculate 95% Tolerance Interval
 g = 0.95  # confidence level for tolerance interval
@@ -160,14 +154,12 @@ k = np.sqrt((n - 1) * (1 + 1/n) * stats.f.ppf(g, 1, n - 1) / (n - 1))
 lower_tolerance = mean - k * std_dev
 upper_tolerance = mean + k * std_dev
 
-##print(f"95% Tolerance Interval for age: ({round(float(lower_tolerance), 3)}, {round(float(upper_tolerance), 3)})")
 
 # Step 5: Check proportion of test samples inside the Tolerance Interval
 inside_count = ((test_data >= lower_tolerance) & (test_data <= upper_tolerance)).sum()
 total_test = len(test_data)
 proportion_inside = inside_count / total_test
 
-###print(f"Proportion of test data inside tolerance interval: {inside_count}/{total_test} = {proportion_inside:.2f}")
 
 # Create histogram for age
 plt.figure(figsize=(10, 5))
